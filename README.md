@@ -50,12 +50,12 @@ You can very easily access some basic information about your account and your
 reporting suites:
 
 ```python
-    print analytics.suites
-    suite = analytics.suites['reportsuite_name']
-    print suite
-    print suite.metrics
-    print suite.elements
-    print suite.segments
+    print(analytics.suites)
+    suite = analytics.suites['reportsuite_name'])
+    print(suite)
+    print(suite.metrics)
+    print(suite.elements)
+    print(suite.segments)
 ```
 
 You can refer to suites, segments, elements and so on using both their
@@ -82,7 +82,7 @@ If you call `print` on the report defintion it will print out the JSON that you 
         .element('page') \
         .metric('pageviews') \
 
-    print report
+    print(report)
 ```
 
 ### Report Options
@@ -136,7 +136,7 @@ _Note: to disable the ID check add the parameter `disable_validation=True`_
 
 To see the raw output of a report.
 ```python
-    print report
+    print(report)
 ```
 
 If you need an easy way to access the data in a report:
@@ -170,7 +170,7 @@ In these cases, it can be useful to use the lower-level access this module provi
         .set(anomalyDetection='month')
 
 
-    print query
+    print(query)
 ```
 
 
@@ -184,7 +184,7 @@ The underlying API is a JSON API. At anytime you can get a string representation
 That JSON can be used in the [API explorer](https://marketing.adobe.com/developer/api-explorer). You have have it formatted nice and printed out without the unicode representations if you use the following
 
 ```python
-    print suite.report.element('pageviews')
+    print(suite.report.element('pageviews')
 ```
 
 You can also create a report from JSON or a string representation of JSON.
@@ -231,8 +231,8 @@ Here's an example:
     reports = omniture.sync(queue, heartbeat)
 
     for report in reports:
-        print report.segment
-        print report.data
+        print(report.segment)
+        print(report.data)
 
 ```
 

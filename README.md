@@ -1,5 +1,5 @@
 # python-omniture
-[![Build Status](https://travis-ci.org/ajcarmen/python-omniture.svg?branch=vPython3)](https://travis-ci.org/ajcarmen/python-omniture)
+
 
 
 `python-omniture` is a wrapper around the Adobe Analytics API.

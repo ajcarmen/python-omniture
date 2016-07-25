@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-from account import Account, Suite
-from elements import Value, Element, Segment
-from query import Query
-from reports import InvalidReportError, Report, DataWarehouseReport
+from .account import Account, Suite
+from .elements import Value, Element, Segment
+from .query import Query
+from .reports import InvalidReportError, Report, DataWarehouseReport
 import os
 import json
 import logging.config
@@ -28,7 +28,7 @@ def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT, prefi
 
 def queue(queries):
     if isinstance(queries, dict):
-        queries = queries.values()
+        queries = list(queries.values())
 
     for query in queries:
         query.queue()
@@ -55,7 +55,7 @@ def sync(queries, heartbeat=None, interval=1):
     if isinstance(queries, list):
         return [query.sync(heartbeat, interval) for query in queries]
     elif isinstance(queries, dict):
-        return {key: query.sync(heartbeat, interval) for key, query in queries.items()}
+        return {key: query.sync(heartbeat, interval) for key, query in list(queries.items())}
     else:
         message = "Queries should be a list or a dictionary, received: {}".format(
             queries.__class__)

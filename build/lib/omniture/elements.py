@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import utils
+from . import utils
 from copy import copy
 import logging
 
@@ -14,7 +14,7 @@ class Value(object):
         self.parent = parent
         self.properties = {'id': id}
 
-        for k, v in extra.items():
+        for k, v in list(extra.items()):
             setattr(self, k, v)
 
     @classmethod
@@ -23,7 +23,7 @@ class Value(object):
         return utils.AddressableList(values, name)
 
     def __repr__(self):
-        print self
+        print(self)
         return "<{title}: {id} in {parent}>".format(**self.__dict__)
 
     def copy(self):

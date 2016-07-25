@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-from elements import Value, Element, Segment
-import utils
+from .elements import Value, Element, Segment
+from . import utils
 import logging
 from collections import OrderedDict
 from datetime import datetime
@@ -14,7 +14,7 @@ class InvalidReportError(Exception):
     invalid
     """
     def normalize(self, error):
-        print 'error', error
+        print('error', error)
         return {
             'error': error.get('error'),
             'error_description': error.get('error_description'),
@@ -145,9 +145,9 @@ class Report(object):
                 except:
                     data[element] = "null"
             #parse out any breakdowns and add to the data set
-            if row.has_key('breakdown') and len(row['breakdown']) > 0:
+            if 'breakdown' in row and len(row['breakdown']) > 0:
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
-            elif row.has_key('counts'):
+            elif 'counts' in row:
                 for index, metric in enumerate(row['counts']):
                         #decide what type of event
                         if self.metrics[index].decimals > 0 or metric.find('.') >-1:
@@ -219,7 +219,7 @@ class Report(object):
             #populate header Row
             if index < 1:
                 html += "<tr>"
-                if item.has_key('datetime'):
+                if 'datetime' in item:
                     html += "<td><b>{0}<b></td>".format('datetime')
                 for key in item:
                     if key != 'datetime':
@@ -227,9 +227,9 @@ class Report(object):
                 html += "</tr><tr>"
 
             #Make sure date time is alway listed first
-            if item.has_key('datetime'):
+            if 'datetime' in item:
                 html += "<td>{0}</td>".format(item['datetime'])
-            for key, value in item.iteritems():
+            for key, value in item.items():
                 if key != 'datetime':
                     html += "<td>{0}</td>".format(value)
         return html

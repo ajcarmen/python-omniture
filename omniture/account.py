@@ -5,10 +5,10 @@ import sha
 import json
 from datetime import datetime
 from datetime import date
-from elements import Value, Element, Segment
-from query import Query
-import reports
-import utils
+from .elements import Value, Element, Segment
+from .query import Query
+from . import reports
+from . import utils
 import logging
 import random
 import uuid
@@ -113,7 +113,7 @@ class Account(object):
 
     def _serialize_header(self, properties):
         header = []
-        for key, value in properties.items():
+        for key, value in list(properties.items()):
             header.append('{key}="{value}"'.format(key=key, value=value))
         return ', '.join(header)
 
@@ -208,52 +208,52 @@ class Suite(Value):
         
         reportJSON = reportJSON['reportDescription']
         
-        if reportJSON.has_key('dateFrom') and reportJSON.has_key('dateTo'):
+        if 'dateFrom' in reportJSON and 'dateTo' in reportJSON:
             q = q.range(reportJSON['dateFrom'],reportJSON['dateTo'])
-        elif reportJSON.has_key('dateFrom'):
+        elif 'dateFrom' in reportJSON:
             q = q.range(reportJSON['dateFrom'])
-        elif reportJSON.has_key('date'):
+        elif 'date' in reportJSON:
             q = q.range(reportJSON['date'])
         else:
             q = q
         
-        if reportJSON.has_key('dateGranularity'):
+        if 'dateGranularity' in reportJSON:
             q = q.granularity(reportJSON['dateGranularity'])
                         
-        if reportJSON.has_key('source'):
+        if 'source' in reportJSON:
             q = q.set('source',reportJSON['source'])
         
-        if reportJSON.has_key('metrics'):
+        if 'metrics' in reportJSON:
             for m in reportJSON['metrics']:
                 q = q.metric(m['id'])
         
-        if reportJSON.has_key('elements'):
+        if 'elements' in reportJSON:
             for e in reportJSON['elements']:
                 id = e['id']
                 del e['id']
                 q= q.element(id, **e)
         
-        if reportJSON.has_key('locale'):
+        if 'locale' in reportJSON:
             q = q.set('locale',reportJSON['locale'])
                         
-        if reportJSON.has_key('sortMethod'):
+        if 'sortMethod' in reportJSON:
             q = q.set('sortMethod',reportJSON['sortMethod'])
                         
-        if reportJSON.has_key('sortBy'):
+        if 'sortBy' in reportJSON:
             q = q.sortBy(reportJSON['sortBy'])
         
         #WARNING This doesn't carry over segment IDs meaning you can't manipulate the segments in the new object
         #TODO Loop through and add segment ID with filter method (need to figure out how to handle combined)
-        if reportJSON.has_key('segments'):
+        if 'segments' in reportJSON:
             q = q.set('segments', reportJSON['segments'])
         
-        if reportJSON.has_key('anomalyDetection'):
+        if 'anomalyDetection' in reportJSON:
             q = q.set('anomalyDetection',reportJSON['anomalyDetection'])
                       
-        if reportJSON.has_key('currentData'):
+        if 'currentData' in reportJSON:
             q = q.set('currentData',reportJSON['currentData'])            
 
-        if reportJSON.has_key('elementDataEncoding'):
+        if 'elementDataEncoding' in reportJSON:
             q = q.set('elementDataEncoding',reportJSON['elementDataEncoding'])            
         return q
     

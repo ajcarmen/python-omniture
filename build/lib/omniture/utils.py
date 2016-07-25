@@ -30,7 +30,7 @@ class AddressableList(list):
             matches = [item for item in self if item.title == key or item.id == key]
             count = len(matches)
             if count > 1:
-                matches = map(repr, matches)
+                matches = list(map(repr, matches))
                 error = "Found multiple matches for {key}: {matches}. ".format(
                     key=key, matches=", ".join(matches))
                 advice = "Use the identifier instead."
@@ -75,7 +75,7 @@ def date(obj):
             return obj.date()
         else:
             return obj
-    elif isinstance(obj, basestring):
+    elif isinstance(obj, str):
         return parse_date(obj).date()
     else:
         raise ValueError("Can only convert strings into dates, received {}"
@@ -106,7 +106,7 @@ def affix(prefix, base, suffix, connector='_'):
 def translate(d, mapping):
     d = copy.copy(d)
 
-    for src, dest in mapping.items():
+    for src, dest in list(mapping.items()):
         if src in d:
             d[dest] = d[src]
             del d[src]

@@ -1,13 +1,14 @@
 import requests
 import binascii
 import time
+import sha
 import json
 from datetime import datetime
 from datetime import date
-from .elements import Value, Element, Segment
-from .query import Query
-from . import reports
-from . import utils
+from elements import Value, Element, Segment
+from query import Query
+import reports
+import utils
 import logging
 import random
 import uuid
@@ -112,7 +113,7 @@ class Account(object):
 
     def _serialize_header(self, properties):
         header = []
-        for key, value in list(properties.items()):
+        for key, value in properties.items():
             header.append('{key}="{value}"'.format(key=key, value=value))
         return ', '.join(header)
 
@@ -120,14 +121,13 @@ class Account(object):
         nonce = str(uuid.uuid4())
         base64nonce = binascii.b2a_base64(binascii.a2b_qp(nonce))
         created_date = datetime.utcnow().isoformat() + 'Z'
-        sha_string = nonce + created_date + self.secret
-        sha_string_encoded = sha_string.encode('ascii')
-        sha_object = hashlib.sha1(sha_string_encoded)
+        sha_object = sha.new(nonce + created_date + self.secret)
+        password_64 = binascii.b2a_base64(sha_object.digest())
 
         properties = {
             "Username": self.username,
-            "PasswordDigest": password_64.strip().decode('ascii'),
-            "Nonce": base64nonce.strip().decode('ascii'),
+            "PasswordDigest": password_64.strip(),
+            "Nonce": base64nonce.strip(),
             "Created": created_date,
         }
         header = 'UsernameToken ' + self._serialize_header(properties)
@@ -208,52 +208,52 @@ class Suite(Value):
         
         reportJSON = reportJSON['reportDescription']
         
-        if 'dateFrom' in reportJSON and 'dateTo' in reportJSON:
+        if reportJSON.has_key('dateFrom') and reportJSON.has_key('dateTo'):
             q = q.range(reportJSON['dateFrom'],reportJSON['dateTo'])
-        elif 'dateFrom' in reportJSON:
+        elif reportJSON.has_key('dateFrom'):
             q = q.range(reportJSON['dateFrom'])
-        elif 'date' in reportJSON:
+        elif reportJSON.has_key('date'):
             q = q.range(reportJSON['date'])
         else:
             q = q
         
-        if 'dateGranularity' in reportJSON:
+        if reportJSON.has_key('dateGranularity'):
             q = q.granularity(reportJSON['dateGranularity'])
                         
-        if 'source' in reportJSON:
+        if reportJSON.has_key('source'):
             q = q.set('source',reportJSON['source'])
         
-        if 'metrics' in reportJSON:
+        if reportJSON.has_key('metrics'):
             for m in reportJSON['metrics']:
                 q = q.metric(m['id'])
         
-        if 'elements' in reportJSON:
+        if reportJSON.has_key('elements'):
             for e in reportJSON['elements']:
                 id = e['id']
                 del e['id']
                 q= q.element(id, **e)
         
-        if 'locale' in reportJSON:
+        if reportJSON.has_key('locale'):
             q = q.set('locale',reportJSON['locale'])
                         
-        if 'sortMethod' in reportJSON:
+        if reportJSON.has_key('sortMethod'):
             q = q.set('sortMethod',reportJSON['sortMethod'])
                         
-        if 'sortBy' in reportJSON:
+        if reportJSON.has_key('sortBy'):
             q = q.sortBy(reportJSON['sortBy'])
         
         #WARNING This doesn't carry over segment IDs meaning you can't manipulate the segments in the new object
         #TODO Loop through and add segment ID with filter method (need to figure out how to handle combined)
-        if 'segments' in reportJSON:
+        if reportJSON.has_key('segments'):
             q = q.set('segments', reportJSON['segments'])
         
-        if 'anomalyDetection' in reportJSON:
+        if reportJSON.has_key('anomalyDetection'):
             q = q.set('anomalyDetection',reportJSON['anomalyDetection'])
                       
-        if 'currentData' in reportJSON:
+        if reportJSON.has_key('currentData'):
             q = q.set('currentData',reportJSON['currentData'])            
 
-        if 'elementDataEncoding' in reportJSON:
+        if reportJSON.has_key('elementDataEncoding'):
             q = q.set('elementDataEncoding',reportJSON['elementDataEncoding'])            
         return q
     

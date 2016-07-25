@@ -120,7 +120,7 @@ class Account(object):
         nonce = str(uuid.uuid4())
         base64nonce = binascii.b2a_base64(binascii.a2b_qp(nonce))
         created_date = datetime.utcnow().isoformat() + 'Z'
-                sha_string = nonce + created_date + self.secret
+        sha_string = nonce + created_date + self.secret
         sha_string_encoded = sha_string.encode('ascii')
         sha_object = hashlib.sha1(sha_string_encoded)
         password_64 = binascii.b2a_base64(sha_object.digest())

@@ -1,6 +1,7 @@
 import requests
 import binascii
 import time
+import sha
 import json
 from datetime import datetime
 from datetime import date
@@ -120,14 +121,13 @@ class Account(object):
         nonce = str(uuid.uuid4())
         base64nonce = binascii.b2a_base64(binascii.a2b_qp(nonce))
         created_date = datetime.utcnow().isoformat() + 'Z'
-        sha_string = nonce + created_date + self.secret
-        sha_string_encoded = sha_string.encode('ascii')
-        sha_object = hashlib.sha1(sha_string_encoded)
+        sha_object = sha.new(nonce + created_date + self.secret)
+        password_64 = binascii.b2a_base64(sha_object.digest())
 
         properties = {
             "Username": self.username,
-            "PasswordDigest": password_64.strip().decode('ascii'),
-            "Nonce": base64nonce.strip().decode('ascii'),
+            "PasswordDigest": password_64.strip(),
+            "Nonce": base64nonce.strip(),
             "Created": created_date,
         }
         header = 'UsernameToken ' + self._serialize_header(properties)

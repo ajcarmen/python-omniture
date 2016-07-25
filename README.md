@@ -51,7 +51,7 @@ reporting suites:
 
 ```python
     print(analytics.suites)
-    suite = analytics.suites['reportsuite_name'])
+    suite = analytics.suites['reportsuite_name']
     print(suite)
     print(suite.metrics)
     print(suite.elements)

@@ -88,7 +88,7 @@ class Account(object):
             headers=self._build_token()
             )
         self.log.debug("Response for %s.%s:%s", api, method, response.text)
-        json_response = response.json()
+        json_response = response.json(encoding = 'utf-8')
 
         if type(json_response) == dict:
             self.log.debug("Error Code %s", json_response.get('error'))

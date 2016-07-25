@@ -123,13 +123,13 @@ class Report(object):
             elif self.type == "trended":
                 if hasattr(self.elements[level-1], 'classification'):
                     #handle the case where there are multiple classifications
-                    element = str(self.elements[level-1].id) + ' | ' + str(self.elements[level-1].classification).encode('utf-8')
+                    element = str(self.elements[level-1].id) + ' | ' + str(self.elements[level-1].classification)
                 else:
                     element = str(self.elements[level-1].id)
             else:
                 if hasattr(self.elements[level], 'classification'):
                     #handle the case where there are multiple classifications
-                    element = str(self.elements[level].id) + ' | ' + str(self.elements[level-1].classification).encode('utf-8')
+                    element = str(self.elements[level].id) + ' | ' + str(self.elements[level-1].classification)
                 else:
                     element = str(self.elements[level].id)
 
@@ -139,7 +139,7 @@ class Report(object):
                 data["datetime_friendly"] = str(row['name'])
             else:
                 try:
-                    data[element] = row['name'].encode('utf-8')
+                    data[element] = row['name']
 
                 # If the name value is Null or non-encodable value, return null
                 except:
